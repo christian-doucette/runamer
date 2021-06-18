@@ -17,7 +17,7 @@ class UsersController < ApplicationController
   def authorize
     # constructs the redirect url for authorization through Strava
     redirect_url = @client.authorize_url(
-      redirect_uri: 'http://localhost:3000/redirect',
+      redirect_uri: 'https://runamer.herokuapp.com/redirect',
       approval_propt: 'force', #will change this to auto when I'm done debugging
       response_type: 'code',
       scope: 'activity:write',
