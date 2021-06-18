@@ -33,7 +33,7 @@ gem 'bootsnap', '>= 1.4.2', require: false
 
 # Gems added by me!
 gem 'strava-ruby-client'
-
+gem 'omniauth'
 
 
 
