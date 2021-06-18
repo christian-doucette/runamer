@@ -64,10 +64,7 @@ class UsersController < ApplicationController
 
     end
 
-    test_api_call
-
-
-    render "general/home.html.erb"
+    render "general/success.html.erb"
 
   end
 
