@@ -19,7 +19,7 @@ class UsersController < ApplicationController
       redirect_uri: 'http://localhost:3000/redirect',
       approval_propt: 'force', #will change this to auto when I'm done debugging
       response_type: 'code',
-      scope: 'profile:write',
+      scope: 'activity:write',
       state: 'magic'
     )
 
@@ -60,8 +60,11 @@ class UsersController < ApplicationController
         :token_exp_date => response.expires_at
       )
 
+
+
     end
 
+    test_api_call
 
 
     render "general/home.html.erb"
@@ -76,6 +79,59 @@ class UsersController < ApplicationController
     # 3) refreshes any access token if necessary
     # 4) Decides activity name (maybe running quotes, idk yet)
     # 5) makes API call to update activity name to the decided name
+  end
+
+
+  def test_api_call
+    puts "about to create activity!"
+    my_id = 28783133
+    my_user = User.find(my_id)
+
+    # if token is outdated, refreshes it
+    if my_user.token_exp_date < Time.now
+      puts "Token outdated, now refreshing"
+      response = @client.oauth_token(
+        refresh_token: my_user.refresh_token,
+        grant_type: 'refresh_token'
+      )
+
+      my_user.update(
+        :access_token   => response.access_token,
+        :refresh_token  => response.refresh_token,
+        :token_exp_date => response.expires_at
+      )
+
+      puts "\n\nnew vals"
+      puts response.access_token
+      puts response.refresh_token
+      puts response.expires_at
+      puts "\n\n"
+    end
+
+
+
+
+
+
+    user_client = Strava::Api::Client.new(
+      access_token: my_user.access_token
+    )
+
+
+
+    activity = user_client.create_activity(
+      name: 'Test activity from strava API2',
+      type: 'Run',
+      start_date_local: Time.now,
+      elapsed_time: 1234,
+      description: 'Just seeing if I can properly create an activity w/ the Strava API. If this is posted then it worked!',
+      distance: 100
+    )
+
+    puts activity
+
+
+    puts "just posted activity!"
   end
 
 
