@@ -71,65 +71,60 @@ class UsersController < ApplicationController
 
   # will respond to strava webhooks here
   def webhook_response
-    # 1) Checks if the webhook is an activity creation - if it isn't, just exits the function (return did nothing as josn or smthg)
-    # 2) gets the associated user
-    # 3) refreshes any access token if necessary
-    # 4) Decides activity name (maybe running quotes, idk yet)
-    # 5) makes API call to update activity name to the decided name
-  end
+    # 1) Picks up the webhook and checks that it has the correct verification token
+    challenge = Strava::Webhooks::Models::Challenge.new(request.query)
+    raise 'Bad Request' unless challenge.verify_token == ENV["VERIFICATION_TOKEN"]
 
 
-  def test_api_call
-    puts "about to create activity!"
-    my_id = 28783133
-    my_user = User.find(my_id)
+    # 2) Checks if the webhook is an activity creation - if it isn't, just exits the function (return did nothing as josn or smthg)
+    if (challenge.object_type == "activity" && challenge.aspect_type == "create" && User.exists?(challenge.owner_id))
 
-    # if token is outdated, refreshes it
-    if my_user.token_exp_date < Time.now
-      puts "Token outdated, now refreshing"
-      response = @client.oauth_token(
-        refresh_token: my_user.refresh_token,
-        grant_type: 'refresh_token'
+      # 3) gets the associated user
+      associated_user = User.find(challenge.owner_id)
+
+      # 4) refreshes any access token if outdated (should probably put this in model)
+      if my_user.token_exp_date < Time.now
+        puts "Token outdated, now refreshing"
+        response = @client.oauth_token(
+          refresh_token: my_user.refresh_token,
+          grant_type: 'refresh_token'
+        )
+
+        my_user.update(
+          :access_token   => response.access_token,
+          :refresh_token  => response.refresh_token,
+          :token_exp_date => response.expires_at
+        )
+      end
+
+      # gets user client
+      associated_user_client = Strava::Api::Client.new(
+        :access_token => associated_user.access_token
       )
 
-      my_user.update(
-        :access_token   => response.access_token,
-        :refresh_token  => response.refresh_token,
-        :token_exp_date => response.expires_at
+
+      # 5) Decides activity name (maybe running quotes, idk yet)
+      new_activity_name = "TEST ACTIVITY NAME: LETS SEE IF THIS WORKS"
+
+
+      # 6) makes API call to update activity name to the decided name
+      puts "about to make API call to update activity"
+
+      activity = client.update_activity(
+        :id => challenge.object_id,
+        :name => new_activity_name
       )
 
-      puts "\n\nnew vals"
-      puts response.access_token
-      puts response.refresh_token
-      puts response.expires_at
-      puts "\n\n"
+
+
+
+    else
+      raise 'Request that my webhook will not deal with'
+
     end
-
-
-
-
-
-
-    user_client = Strava::Api::Client.new(
-      access_token: my_user.access_token
-    )
-
-
-
-    activity = user_client.create_activity(
-      name: 'Test activity from strava API2',
-      type: 'Run',
-      start_date_local: Time.now,
-      elapsed_time: 1234,
-      description: 'Just seeing if I can properly create an activity w/ the Strava API. If this is posted then it worked!',
-      distance: 100
-    )
-
-    puts activity
-
-
-    puts "just posted activity!"
   end
+
+
 
 
 end
