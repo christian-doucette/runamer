@@ -2,14 +2,14 @@
 
 one:
   client_id: 1
-  client_secret: 1
-  access_token: 1
-  refresh_token: 1
-  token_exp_date: 2021-06-18 11:48:34
+  client_secret: MyString
+  access_token: MyString
+  refresh_token: MyString
+  token_exp_date: 2021-06-18 12:02:58
 
 two:
   client_id: 1
-  client_secret: 1
-  access_token: 1
-  refresh_token: 1
-  token_exp_date: 2021-06-18 11:48:34
+  client_secret: MyString
+  access_token: MyString
+  refresh_token: MyString
+  token_exp_date: 2021-06-18 12:02:58
