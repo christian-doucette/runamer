@@ -10,14 +10,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_06_18_160258) do
+ActiveRecord::Schema.define(version: 2021_06_18_180935) do
 
   create_table "users", force: :cascade do |t|
-    t.integer "client_id"
-    t.string "client_secret"
+    t.integer "user_id"
     t.string "access_token"
     t.string "refresh_token"
-    t.datetime "token_exp_date"
+    t.time "token_exp_date"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
