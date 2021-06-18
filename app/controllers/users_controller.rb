@@ -73,6 +73,8 @@ class UsersController < ApplicationController
   end
 
 
+
+
   # will respond to strava webhooks here
   def webhook_response
     puts "webhook recieved!"
