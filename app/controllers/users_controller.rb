@@ -4,6 +4,7 @@ class UsersController < ApplicationController
 
   # adds the app (registered through strava) by its ID
   # in every other Users controller function, can refer to it just as @client
+  # might not need this before webhook_response
   def add_client_app
     @client = Strava::OAuth::Client.new(
       client_id: ENV["STRAVA_CLIENT_ID"],
@@ -35,9 +36,12 @@ class UsersController < ApplicationController
     response = @client.oauth_token(code: params.fetch(:code))
     this_user_id = response.athlete.id
 
-    # creates a subscription every time someone signs up (could just be )
-    # here will add the token in database
-
+    # creates a subscription every time someone signs up (could just be done once, but this was at least will work)
+    subscription = @client.create_push_subscription(
+      :callback_url => 'https://runamer.herokuapp.com/webhook_response',
+      :verify_token => ENV["VERIFICATION_TOKEN"]
+    )
+    puts "subscription created successfully"
 
 
     # updates user is exists, adds if not (should probably put this in model later)
@@ -71,6 +75,8 @@ class UsersController < ApplicationController
 
   # will respond to strava webhooks here
   def webhook_response
+    puts "webhook recieved!"
+
     # 1) Picks up the webhook and checks that it has the correct verification token
     challenge = Strava::Webhooks::Models::Challenge.new(request.query)
     raise 'Bad Request' unless challenge.verify_token == ENV["VERIFICATION_TOKEN"]

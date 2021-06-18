@@ -11,4 +11,5 @@ get '/', to: 'application#home'
 # Users Controller routes
 get '/authorize', to: 'users#authorize'
 get '/redirect', to: 'users#redirect'
+get '/webhook_response', to: 'users#webhook_response'
 end
