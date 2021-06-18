@@ -1,13 +1,11 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  user_id: 1
   access_token: MyString
   refresh_token: MyString
-  token_exp_date: 2021-06-18 14:09:35
+  token_exp_date: 2021-06-18 14:45:34
 
 two:
-  user_id: 1
   access_token: MyString
   refresh_token: MyString
-  token_exp_date: 2021-06-18 14:09:35
+  token_exp_date: 2021-06-18 14:45:34
