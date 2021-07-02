@@ -33,11 +33,20 @@ class UsersController < ApplicationController
   # the url that is returned to after authorization
   # this function adds the new user to the database
   def redirect
+    puts "Calling redirect function! a"
     response = @client.oauth_token(code: params.fetch(:code))
+    puts "b"
     this_user_id = response.athlete.id
+    puts "c"
+
+    # creates webhook client
+    webhook_client = Strava::Webhooks::Client.new(
+      client_id: ENV["STRAVA_CLIENT_ID"],
+      client_secret: ENV["STRAVA_CLIENT_SECRET"]
+    )
 
     # creates a subscription every time someone signs up (could just be done once, but this was at least will work)
-    subscription = @client.create_push_subscription(
+    subscription = webhook_client.create_push_subscription(
       :callback_url => 'https://runamer.herokuapp.com/webhook_response',
       :verify_token => ENV["VERIFICATION_TOKEN"]
     )
