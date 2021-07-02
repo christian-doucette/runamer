@@ -17,7 +17,7 @@ class UsersController < ApplicationController
   def authorize
     # constructs the redirect url for authorization through Strava
     redirect_url = @client.authorize_url(
-      redirect_uri: 'https://runamer.herokuapp.com/redirect',
+      redirect_uri: 'https://runamer.herokuapp.com/redirect', #
       approval_propt: 'force', #will change this to auto when I'm done debugging
       response_type: 'code',
       scope: 'activity:write',
@@ -40,17 +40,17 @@ class UsersController < ApplicationController
     puts "c"
 
     # creates webhook client
-    webhook_client = Strava::Webhooks::Client.new(
-      client_id: ENV["STRAVA_CLIENT_ID"],
-      client_secret: ENV["STRAVA_CLIENT_SECRET"]
-    )
-
-    # creates a subscription every time someone signs up (could just be done once, but this was at least will work)
-    subscription = webhook_client.create_push_subscription(
-      :callback_url => 'https://runamer.herokuapp.com/webhook_response',
-      :verify_token => ENV["VERIFICATION_TOKEN"]
-    )
-    puts "subscription created successfully"
+   # webhook_client = Strava::Webhooks::Client.new(
+   #   client_id: ENV["STRAVA_CLIENT_ID"],
+   #   client_secret: ENV["STRAVA_CLIENT_SECRET"]
+   # )
+#
+#    # creates a subscription every time someone signs up (could just be done once, but this was at least will work)
+#    subscription = webhook_client.create_push_subscription(
+#      :callback_url => 'https://runamer.herokuapp.com/webhook_response',
+#      :verify_token => ENV["VERIFICATION_TOKEN"]
+#    )
+#    puts "subscription created successfully"
 
 
     # updates user is exists, adds if not (should probably put this in model later)
@@ -142,6 +142,8 @@ class UsersController < ApplicationController
   end
 
 
-
+  def test_webhook_response
+    render plain: "Hey, this returns!"
+  end
 
 end
