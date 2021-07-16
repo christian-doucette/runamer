@@ -87,6 +87,7 @@ class UsersController < ApplicationController
   # will respond to strava webhooks here
   def webhook_response
     puts "webhook recieved!"
+    puts request.request_uri
 
     # 1) Picks up the webhook and checks that it has the correct verification token
     challenge = Strava::Webhooks::Models::Challenge.new(request.query)
@@ -143,6 +144,8 @@ class UsersController < ApplicationController
 
 
   def test_webhook_response
+    puts "test webhook request recieved!"
+    puts request.request_uri
     render plain: "Hey, this returns!"
   end
 
