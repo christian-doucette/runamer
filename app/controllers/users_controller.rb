@@ -145,7 +145,10 @@ class UsersController < ApplicationController
 
   def test_webhook_response
     puts "test webhook request recieved!"
-    puts request.request_uri
+    url = request.original_fullpath
+    uri = URI.parse(url)
+    params = CGI.parse(uri.query)
+    puts params
     render plain: "Hey, this returns!"
   end
 
