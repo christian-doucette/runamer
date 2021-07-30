@@ -12,5 +12,6 @@ get '/', to: 'application#home'
 get '/authorize', to: 'users#authorize'
 get '/redirect', to: 'users#redirect'
 get '/webhook_response', to: 'users#webhook_response'
+post '/webhook_response', to: 'users#webhook_response'
 get '/test_webhook_response', to: 'users#test_webhook_response'
 end

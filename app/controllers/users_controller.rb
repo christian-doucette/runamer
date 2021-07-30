@@ -86,6 +86,7 @@ class UsersController < ApplicationController
 
   # will respond to strava webhooks here
   def webhook_response
+    puts "Webhook response function called"
     # if get request, checks if it is the subscription call
     # if it is, echoes back the hub.challenge token
     if request.get?
