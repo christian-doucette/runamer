@@ -20,7 +20,7 @@ class UsersController < ApplicationController
       redirect_uri: 'https://runamer.herokuapp.com/redirect', #
       approval_propt: 'force', #will change this to auto when I'm done debugging
       response_type: 'code',
-      scope: 'activity:write',
+      scope: 'activity:write,activity:read_all',
       state: 'magic'
     )
 
