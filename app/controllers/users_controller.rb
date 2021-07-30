@@ -145,12 +145,11 @@ class UsersController < ApplicationController
 
 
   def test_webhook_response
-    puts "test webhook request recieved!"
     url = request.original_fullpath
     uri = URI.parse(url)
     params = uri.query ? CGI.parse(uri.query) : {}
-    puts params
-    render json: {id: params['hub.challenge']}
+    
+    render json: {id: params['hub.challenge'][0]}
   end
 
 end
