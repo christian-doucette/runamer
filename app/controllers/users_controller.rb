@@ -150,7 +150,7 @@ class UsersController < ApplicationController
     uri = URI.parse(url)
     params = uri.query ? CGI.parse(uri.query) : {}
     puts params
-    render plain: params['hub.challenge']
+    render json: {id: params['hub.challenge']}
   end
 
 end
