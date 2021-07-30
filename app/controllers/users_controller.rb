@@ -93,7 +93,8 @@ class UsersController < ApplicationController
     challenge = Strava::Webhooks::Models::Challenge.new(request.query)
     raise 'Bad Request' unless challenge.verify_token == ENV["VERIFICATION_TOKEN"]
 
-
+    # 2) Checks if this is a subscription request - if it is, returns the hub.challenge token that was sent
+    #if 
     # 2) Checks if the webhook is an activity creation - if it isn't, just exits the function (return did nothing as josn or smthg)
     if (challenge.object_type == "activity" && challenge.aspect_type == "create" && User.exists?(challenge.owner_id))
 
@@ -149,7 +150,7 @@ class UsersController < ApplicationController
     uri = URI.parse(url)
     params = uri.query ? CGI.parse(uri.query) : {}
     puts params
-    render plain: "Hey, this returns!"
+    render plain: params['hub.challenge']
   end
 
 end
