@@ -52,14 +52,14 @@ class UsersController < ApplicationController
 #    puts "subscription created successfully"
 
 
+      puts "Expires at info:"
+      puts "Val: #{response.expires_at}"
+      puts "Time after now: #{response.expires_at.to_i - Time.now.to_i}"
+      puts "Class of expires_at: #{response.expires_at.class}"
+
     # updates user is exists, adds if not (should probably put this in model later)
     if User.exists?(this_user_id)
       puts "user is already in the database, adding in new tokens"
-      puts "Expires at info:"
-      puts "Val: #{response.expires_at}"
-     puts "Time after now: #{response.expires_at.to_i - Time.now.to_i}"
-     puts "Class of expires_at: #{response.expires_at.class}"
-
       this_user = User.find(this_user_id)
       this_user.update(
         :access_token   => response.access_token,
@@ -75,6 +75,7 @@ class UsersController < ApplicationController
         :refresh_token  => response.refresh_token,
         :token_exp_date => response.expires_at
       )
+      puts "Just added user: #{new_user.inspect}"
       puts "Response vals for new User:"
       puts response
 
