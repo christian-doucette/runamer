@@ -3,9 +3,7 @@ class CreateUsers < ActiveRecord::Migration[6.0]
     create_table :users do |t|
       t.string :access_token
       t.string :refresh_token
-      t.time :token_exp_date
-
-      t.timestamps
-    end
+      t.integer :token_exp_date
+      end
   end
 end
