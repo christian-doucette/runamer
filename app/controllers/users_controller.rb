@@ -94,10 +94,7 @@ class UsersController < ApplicationController
     # if it is, echoes back the hub.challenge token
     if request.get?
       puts "Webhook get request recieved"
-      url = request.original_fullpath
-      uri = URI.parse(url)
-      params = uri.query ? CGI.parse(uri.query) : {}
-      params.transform_values! {|value| value[0]}
+      params = request.query_parameters
       puts params
 
       if params['hub.mode'] == "subscribe" && params['hub.verify_token'] == ENV['VERIFICATION_TOKEN']
@@ -110,7 +107,9 @@ class UsersController < ApplicationController
       # if post request, checks if it is an activity creation post
     elsif request.post?
       puts "Webhook post request recieved. Params are:"
+      params = request.request_parameters
       puts params
+
       if params['object_type'] == 'activity' && params['aspect_type'] == 'create'
 	puts 'This is an activity creation: will attempt to automatically change the name'
 	# potentially should make it only change if the name is one of the default ones, so custom names won't be overriden
