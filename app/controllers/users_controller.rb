@@ -64,7 +64,7 @@ class UsersController < ApplicationController
       this_user.update(
         :access_token   => response.access_token,
         :refresh_token  => response.refresh_token,
-        :token_exp_date => response.expires_at
+        :token_exp_date => response.expires_at.to_i
       )
 
     else
@@ -73,7 +73,7 @@ class UsersController < ApplicationController
         :id             => response.athlete.id,
         :access_token   => response.access_token,
         :refresh_token  => response.refresh_token,
-        :token_exp_date => response.expires_at
+        :token_exp_date => response.expires_at.to_i
       )
       puts "Just added user: #{new_user.inspect}"
       puts "Response vals for new User:"
@@ -117,7 +117,7 @@ class UsersController < ApplicationController
 	puts 'This is an activity creation: will attempt to automatically change the name'
 	# potentially should make it only change if the name is one of the default ones, so custom names won't be overriden
 #	this_user = User.find(params['owner_id']
-	if Time.now < this_user.token_exp_date
+	if Time.now.to_i < this_user.token_exp_date
 		puts "Updating out of date user token (#{this_user.token_exp_date} when current time is #{Time.now}"
 		response = @client.oauth_token(refresh_token: this_user.refresh_token, grant_type: 'refresh_token')
 		this_user.update(
