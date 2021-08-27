@@ -34,11 +34,9 @@ class UsersController < ApplicationController
   # the url that is returned to after authorization
   # this function adds the new user to the database
   def redirect
-    puts "Calling redirect function! a"
+    puts "Calling redirect function!"
     response = @client.oauth_token(code: params.fetch(:code))
-    puts "b"
     this_user_id = response.athlete.id
-    puts "c"
 
     # creates webhook client
    # webhook_client = Strava::Webhooks::Client.new(
@@ -57,6 +55,10 @@ class UsersController < ApplicationController
     # updates user is exists, adds if not (should probably put this in model later)
     if User.exists?(this_user_id)
       puts "user is already in the database, adding in new tokens"
+      puts "Expires at info:"
+      puts "Val: #{response.expires_at}"
+     puts "Time after now: #{response.expires_at.to_i - Time.now.to_i}"
+     puts "Class of expires_at: #{response.expires_at.class}"
 
       this_user = User.find(this_user_id)
       this_user.update(
