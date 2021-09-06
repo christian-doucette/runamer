@@ -127,11 +127,13 @@ class UsersController < ApplicationController
 		)
 		puts "Just updated user, new info is #{response}"
 	end
-	
+
+	puts 'About to make API to call to update activity'
 	updated_activity = @client.update_activity(
 		id: params['object_id'],
 		name: 'Activity updated by Strava API'
 	)
+	puts 'Just made API call to update activity'
 		
         render json: {}, status: :ok
       else
