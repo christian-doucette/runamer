@@ -128,10 +128,11 @@ class UsersController < ApplicationController
 		puts "Just updated user, new info is #{response}"
 	end
 
-	puts 'About to make API to call to update activity'
+	puts "Creating user client with access token #{this_user.access_token} now"
 	user_client = Strava::Api::Client.new(
 		access_token: this_user.access_token
 	)
+	puts "Created user client, about to make API call"
 	updated_activity = user_client.update_activity(
 		id: params['object_id'],
 		name: 'Activity updated by Strava API'
