@@ -126,8 +126,13 @@ class UsersController < ApplicationController
 			:token_exp_date => response.expires_at
 		)
 		puts "Just updated user, new info is #{response}"
-		
 	end
+	
+	updated_activity = @client.update_activity(
+		id: params['object_id'],
+		name: 'Activity updated by Strava API'
+	)
+		
         render json: {}, status: :ok
       else
         render json: {}, status: :ok
