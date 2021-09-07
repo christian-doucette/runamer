@@ -117,7 +117,7 @@ class UsersController < ApplicationController
 	puts 'This is an activity creation: will attempt to automatically change the name'
 	# potentially should make it only change if the name is one of the default ones, so custom names won't be overriden
 	this_user = User.find(params['owner_id'])
-	if Time.now.to_i < this_user.token_exp_date
+	if Time.now.to_i >= this_user.token_exp_date
 		puts "Updating out of date user token (#{this_user.token_exp_date} when current time is #{Time.now}"
 		response = @client.oauth_token(refresh_token: this_user.refresh_token, grant_type: 'refresh_token')
 		this_user.update(
