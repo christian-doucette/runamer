@@ -100,7 +100,7 @@ class UsersController < ApplicationController
 
         updated_activity = user_client.update_activity(
           id: params['object_id'],
-          name: 'Activity updated by Strava API'
+          name: Quote.order("RANDOM()").first.format_quote
         )
         puts 'Just made API call to update activity'
 
