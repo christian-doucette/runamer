@@ -38,20 +38,6 @@ class UsersController < ApplicationController
     response = @client.oauth_token(code: params.fetch(:code))
     this_user_id = response.athlete.id
 
-    # creates webhook client
-   # webhook_client = Strava::Webhooks::Client.new(
-   #   client_id: ENV["STRAVA_CLIENT_ID"],
-   #   client_secret: ENV["STRAVA_CLIENT_SECRET"]
-   # )
-#
-#    # creates a subscription every time someone signs up (could just be done once, but this was at least will work)
-#    subscription = webhook_client.create_push_subscription(
-#      :callback_url => 'https://runamer.herokuapp.com/webhook_response',
-#      :verify_token => ENV["VERIFICATION_TOKEN"]
-#    )
-#    puts "subscription created successfully"
-
-
       puts "Expires at info:"
       puts "Val: #{response.expires_at}"
       puts "Time after now: #{response.expires_at.to_i - Time.now.to_i}"
@@ -147,15 +133,4 @@ class UsersController < ApplicationController
       raise 'Bad Request'
     end
   end
-
-
-  def test_webhook_response
-
-    url = request.original_fullpath
-    uri = URI.parse(url)
-    params = uri.query ? CGI.parse(uri.query) : {}
-    params.transform_values! {|value| value[0]}
-    render json: {'hub.challenge': params['hub.challenge']}
-  end
-
 end
