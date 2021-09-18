@@ -43,7 +43,7 @@ class UsersController < ApplicationController
       puts "Time after now: #{response.expires_at.to_i - Time.now.to_i}"
       puts "Class of expires_at: #{response.expires_at.class}"
 
-    # updates user is exists, adds if not (should probably put this in model later)
+    # updates user is exists, adds if not 
     if User.exists?(this_user_id)
       puts "user is already in the database, adding in new tokens"
       this_user = User.find(this_user_id)
@@ -103,22 +103,12 @@ class UsersController < ApplicationController
 	puts 'This is an activity creation: will attempt to automatically change the name'
 	# potentially should make it only change if the name is one of the default ones, so custom names won't be overriden
 	this_user = User.find(params['owner_id'])
-	if Time.now.to_i >= this_user.token_exp_date
-		puts "Updating out of date user token (#{this_user.token_exp_date} when current time is #{Time.now}"
-		response = @client.oauth_token(refresh_token: this_user.refresh_token, grant_type: 'refresh_token')
-		this_user.update(
-			:access_token   => response.access_token,
-			:refresh_token  => response.refresh_token,
-			:token_exp_date => response.expires_at
-		)
-		puts "Just updated user, new info is #{response}"
-	end
+	this_user.update_user_token!(@client)
 
 	puts "Creating user client with access token #{this_user.access_token} now"
-	user_client = Strava::Api::Client.new(
-		access_token: this_user.access_token
-	)
 	puts "Created user client, about to make API call"
+	user_client = this_user.generate_user_client
+	
 	updated_activity = user_client.update_activity(
 		id: params['object_id'],
 		name: 'Activity updated by Strava API'
