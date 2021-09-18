@@ -29,14 +29,8 @@ class UsersController < ApplicationController
   # the url that is returned to after authorization
   # this function adds the new user to the database
   def redirect
-    puts 'Calling redirect function!'
     response = @client.oauth_token(code: params.fetch(:code))
     this_user_id = response.athlete.id
-
-    puts 'Expires at info:'
-    puts "Val: #{response.expires_at}"
-    puts "Time after now: #{response.expires_at.to_i - Time.now.to_i}"
-    puts "Class of expires_at: #{response.expires_at.class}"
 
     # updates user is exists, adds if not
     if User.exists?(this_user_id)
@@ -56,10 +50,6 @@ class UsersController < ApplicationController
         refresh_token: response.refresh_token,
         token_exp_date: response.expires_at.to_i
       )
-      puts "Just added user: #{new_user.inspect}"
-      puts 'Response vals for new User:'
-      puts response
-
     end
 
     render 'general/success.html.erb'
@@ -67,43 +57,32 @@ class UsersController < ApplicationController
 
   # will respond to strava webhooks here
   def webhook_response
-    puts 'Webhook response function called'
     # if get request, checks if it is the subscription call
     # if it is, echoes back the hub.challenge token
     if request.get?
-      puts 'Webhook get request recieved'
       params = request.query_parameters
-      puts params
 
       if params['hub.mode'] == 'subscribe' && params['hub.verify_token'] == ENV['VERIFICATION_TOKEN']
         render json: { 'hub.challenge': params['hub.challenge'] }, status: :ok
-        puts 'Successfully subscribed!'
       else
         raise 'Bad Request'
       end
 
       # if post request, checks if it is an activity creation post
     elsif request.post?
-      puts 'Webhook post request recieved. Params are:'
       params = request.request_parameters
-      puts params
 
       if params['object_type'] == 'activity' && params['aspect_type'] == 'create'
-        puts 'This is an activity creation: will attempt to automatically change the name'
         # potentially should make it only change if the name is one of the default ones, so custom names won't be overriden
         this_user = User.find(params['owner_id'])
         this_user.update_user_token!(@client)
 
-        puts "Creating user client with access token #{this_user.access_token} now"
-        puts 'Created user client, about to make API call'
         user_client = this_user.generate_user_client
 
         updated_activity = user_client.update_activity(
           id: params['object_id'],
           name: Quote.order("RANDOM()").first.format_quote
         )
-        puts 'Just made API call to update activity'
-
         render json: {}, status: :ok
       else
         render json: {}, status: :ok
