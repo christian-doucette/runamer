@@ -1,4 +1,10 @@
 # Runamer
-Ruby on Rails app that will interact with the Strava API and webhooks to rename runs automatically
+Runamer is currently live [here](https://runamer.herokuapp.com/)!
 
-Currently live [here](https://runamer.herokuapp.com/), although it is not working yet.
+## Summary
+Runamer is a Ruby on Rails web application that:
+- Integrates with the Strava API and webhooks
+- Automatically renames runs with a random quote
+- Authenticates users and refreshes API user tokens when necessary
+
+
